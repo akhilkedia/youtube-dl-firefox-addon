@@ -1,0 +1,7 @@
+{
+  "name": "firefox_command_runner",
+  "description": "Run native linux commands from firefox",
+  "path": "/home/akhil/opt/firefox-command-runner/app/firefox-command-runner.py",
+  "type": "stdio",
+  "allowed_extensions": [ "firefox-command-runner@example.org" ]
+}
