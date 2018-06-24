@@ -1,35 +1,46 @@
-This is a very simple example of how to use [native messaging](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Native_messaging) to exchange messages between a WebExtension and a native application.
+# ![youtube-dl-firefox-addon](./add-on/icons/message.svg)Youtube-dl Firefox Addon
+ - Firefox addon to download youtube videos using [youtube-dl](https://github.com/rg3/youtube-dl)
 
-The WebExtension, which can be found under "add-on", connects to the native application and listens to messages from it. It then sends a message to the native application when the user clicks on the WebExtension's browser action. The message payload is just "ping".
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-green.svg)](http://www.gnu.org/licenses/gpl-3.0) [![Donate](https://img.shields.io/badge/Donate-PayPal-blue.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UY6TVJXST724J)
 
-The native application, which can be found under "app", listens for messages from the WebExtension. When it receives a message, the native application sends a response message whose payload is just "pong". The native application is written in Python.
+## Table of Contents
 
-## Setup ##
+ * [What Youtube Dl Firefox Addon does](#what-youtube-dl-firefox-addon-does)
+ * [Prerequisites](#prerequisites)
+ * [How to install Youtube Dl Firefox Addon](#how-to-install-youtube-dl-firefox-addon)
+ * [Donations](#donations)
+ * [License](#license)
 
-To get this working, there's a little setup to do.
+## What Youtube Dl Firefox Addon does
 
-### Mac OS/Linux setup ###
+This is a firefox addon to which downloads youtube videos using [youtube-dl](https://github.com/rg3/youtube-dl).
 
-1. Check that the [file permissions](https://en.wikipedia.org/wiki/File_system_permissions) for "ping_pong.py" include the `execute` permission.
-2. Edit the "path" property of "ping_pong.json" to point to the location of "ping_pong.py" on your computer.
-3. copy "ping_pong.json" to the correct location on your computer. See [App manifest location ](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Native_manifests#Manifest_location) to find the correct location for your OS.
+You can configure youtube dl to download only audio, or convert into any desired format after installing, or even download full youtube playlists.
 
-### Windows setup ###
+## Prerequisites
 
-1. Check you have Python installed, and that your system's PATH environment variable includes the path to Python.  See [Using Python on Windows](https://docs.python.org/2/using/windows.html). You'll need to restart the web browser after making this change, or the browser won't pick up the new environment variable.
-2. Edit the "path" property of "ping_pong.json" to point to the location of "ping_pong_win.bat" on your computer. Note that you'll need to escape the Windows directory separator, like this: `"path": "C:\\Users\\MDN\\native-messaging\\app\\ping_pong_win.bat"`.
-3. Edit "ping_pong_win.bat" to refer to the location of "ping_pong.py" on your computer.
-4. Add a registry key containing the path to "ping_pong.json" on your computer. See [App manifest location ](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Native_manifests#Manifest_location) to find details of the registry key to add.
+1. Needs [youtube-dl](https://github.com/rg3/youtube-dl) installed.
+1. Needs python installed.
 
-To assist in troubleshooting on Windows, there is a script called `check_config_win.py`. Running this from the command line should give you an idea of any problems.
+## How to install Youtube Dl Firefox Addon
 
-## Testing the example ##
+1. Clone this repo
+1. Add the addon [command_runner-1.0-an+fx-linux.xpi](./command_runner-1.0-an+fx-linux.xpi?raw=true) from this repo to firefox by double-clicking.
+1. Edit the file [firefox_command_runner.json](./app/firefox_command_runner.json) and edit the `path` to the location of the file `./app/firefox-command-runner.py` (i.e., where you cloned this repo to.).
+1. Copy the file `firefox_command_runner.json` to the folder `/home/akhil/.mozilla/native-messaging-hosts/` (create the folder if it does not exist).
 
-Then just install the add-on as usual, by visiting about:debugging, clicking "Load Temporary Add-on", and selecting the add-on's "manifest.json".
+## Donations
+If you like this project, buy me a cup of coffee! :)
 
-You should see a new browser action icon in the toolbar. Open the console ("Tools/Web Developer/Browser Console" in Firefox), and click the browser action icon. You should see output like this in the console:
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UY6TVJXST724J)
 
-    Sending: ping
-    Received: pong
+## License
 
-If you don't see this output, see the [Troubleshooting guide](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Native_messaging#Troubleshooting) for ideas.
+This program is Youtube Dl Firefox Addon
+Copyright (C) 2017  Akhil Kedia
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
