@@ -8,6 +8,7 @@
  * [What Youtube Dl Firefox Addon does](#what-youtube-dl-firefox-addon-does)
  * [Prerequisites](#prerequisites)
  * [How to install Youtube Dl Firefox Addon](#how-to-install-youtube-dl-firefox-addon)
+ * [How to use this addon](#how-to-use-this-addon)
  * [Donations](#donations)
  * [License](#license)
 
@@ -15,19 +16,27 @@
 
 This is a firefox addon to which downloads youtube videos using [youtube-dl](https://github.com/rg3/youtube-dl).
 
-You can configure youtube dl to download only audio, or convert into any desired format after installing, or even download full youtube playlists.
+You can configure youtube-dl to download only audio, or convert into any desired format after installing, or even download full youtube playlists. These options are controlled via youtube-dl's own [configuration](https://github.com/ytdl-org/youtube-dl#configuration)
 
 ## Prerequisites
 
 1. Needs [youtube-dl](https://github.com/rg3/youtube-dl) installed.
 1. Needs python installed.
+1. This has only been tested on Ubuntu linux, but should ideally work on all platforms where youtube-dl works. You will need to change the path for the `firefox_command_runner.json` for other platforms.
 
 ## How to install Youtube Dl Firefox Addon
 
 1. Clone this repo
 1. Add the addon [command_runner-1.0-an+fx-linux.xpi](./command_runner-1.0-an+fx-linux.xpi?raw=true) from this repo to firefox by double-clicking.
 1. Edit the file [firefox_command_runner.json](./app/firefox_command_runner.json) and edit the `path` to the location of the file `./app/firefox-command-runner.py` (i.e., where you cloned this repo to.).
-1. Copy the file `firefox_command_runner.json` to the folder `/home/akhil/.mozilla/native-messaging-hosts/` (create the folder if it does not exist).
+1. Copy the file `firefox_command_runner.json` to the folder `/home/<username>/.mozilla/native-messaging-hosts/` (replace `<username>` wtih your own username. Create the folder if it does not exist).
+
+## How to use this addon
+
+1. Go to any youtube video page
+1. Press the addon's logo in the toolbar once. (The logo looks like a YouTube icon).
+1. The video will be downloaded automatically in the background.
+1. After the download is finished, you will get a notification saying the download has finished. For the download locations, format, etc, please see youtube-dl's own [configuration](https://github.com/ytdl-org/youtube-dl#configuration)
 
 ## Donations
 If you like this project, buy me a cup of coffee! :)
