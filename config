@@ -1,0 +1,22 @@
+# Lines starting with # are comments
+
+# Always extract audio
+-x
+
+# Do not copy the mtime
+--no-mtime
+
+# Best Audio Quality
+--audio-quality 0
+
+# Audio format
+--audio-format mp3
+
+# Dont download full playlist, just video
+--no-playlist
+
+# Embed thumbnail as cover art
+--embed-thumbnail
+
+# Save all videos under Movies directory in your home directory
+-o ~/Music/Downloads/%(title)s.%(ext)s
