@@ -47,16 +47,17 @@ def makeCookieJar(cookies):
 while True:
     try:
         my_jar = None
-        receivedMessage = json.loads(getMessage())
-        #receivedMessage = {'url':"--help", 'cookies':['bla']}
+        #receivedMessage = json.loads(getMessage())
+        receivedMessage = {'url':"--help", 'cookies':['bla']}
         url = receivedMessage['url']
         use_cookies = bool('cookies' in receivedMessage and receivedMessage['cookies'])
 
         # sendMessage(encodeMessage('Starting Download: ' + url))
         try:
             command_vec = ['youtube-dl']
-            if os.path.isfile('../config'):
-                command_vec += ['--config-location', '../config']
+            config_path = os.path.join(os.pardir, 'config')
+            if os.path.isfile(config_path):
+                command_vec += ['--config-location', config_path]
             
             if use_cookies:
                 my_jar = makeCookieJar(receivedMessage['cookies'])
