@@ -29,6 +29,7 @@ You can configure youtube-dl to download only audio, or convert into any desired
 1. Clone this repo
 1. Add the addon [command_runner-1.0-an+fx-linux.xpi](./command_runner-1.0-an+fx-linux.xpi?raw=true) from this repo to firefox by double-clicking.
 1. Edit the file [firefox_command_runner.json](./app/firefox_command_runner.json) and edit the `path` to the location of the file `./app/firefox-command-runner.py` (i.e., where you cloned this repo to.).
+1. Edit the [local youtube-dl config](config) to fit your needs or delete it to use youtube-dl's global configuration
 1. Copy the file `firefox_command_runner.json` to the folder `/home/<username>/.mozilla/native-messaging-hosts/` (replace `<username>` wtih your own username. Create the folder if it does not exist).
 
 ## How to use this addon
