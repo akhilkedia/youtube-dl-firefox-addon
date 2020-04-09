@@ -3,7 +3,7 @@
   "description": "Run native linux commands from firefox",
   "manifest_version": 2,
   "name": "Command Runner",
-  "version": "1.0",
+  "version": "1.1",
   "icons": {
     "48": "icons/message.svg"
   },
@@ -23,6 +23,11 @@
     "default_icon": "icons/message.svg"
   },
 
-  "permissions": ["nativeMessaging", "notifications", "activeTab"]
-
+  "permissions": [
+    "nativeMessaging",
+    "notifications",
+    "activeTab",
+    "cookies",
+    "<all_urls>"
+  ]
 }
