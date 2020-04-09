@@ -63,7 +63,7 @@ while True:
                 command_vec += ['--cookies', my_jar]
 
             command_vec.append(url)
-            sendMessage(encodeMessage('running ' + str(command_vec)))
+            #sendMessage(encodeMessage('running ' + str(command_vec)))
             subprocess.check_output(command_vec)
             sendMessage(encodeMessage('Finished Downloading to /data/down: ' + url))
         except Exception as err:
