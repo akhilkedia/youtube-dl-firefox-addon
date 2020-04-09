@@ -46,26 +46,31 @@ def makeCookieJar(cookies):
 
 while True:
     try:
+        my_jar = None
         receivedMessage = json.loads(getMessage())
-        #receivedMessage = {'url':"--help"}
+        #receivedMessage = {'url':"--help", 'cookies':['bla']}
+        url = receivedMessage['url']
+        use_cookies = bool('cookies' in receivedMessage and receivedMessage['cookies'])
+
+        # sendMessage(encodeMessage('Starting Download: ' + url))
+        try:
+            command_vec = ['youtube-dl']
+            if os.path.isfile('../config'):
+                command_vec += ['--config-location', '../config']
+            
+            if use_cookies:
+                my_jar = makeCookieJar(receivedMessage['cookies'])
+                subprocess.check_output(command_vec + ['--cookies', my_jar, url])
+            else:
+                subprocess.check_output(command_vec + [url])
+
+            sendMessage(encodeMessage('Finished Downloading to /data/down: ' + url))
+        except Exception as err:
+            sendMessage(encodeMessage('Some Error Downloading: ' + url + ': ' + str(err)))
+        finally:
+            # be sure to remove the cookie storage even in case of exception
+            if use_cookies and my_jar:
+                os.unlink(my_jar)
     except Exception as err:
         sendMessage(encodeMessage('JSON error: ' + str(err)))
-
-    # sendMessage(encodeMessage('Starting Download: ' + url))
-    url = receivedMessage.get('url', '');
-    try:
-        command_vec = ['youtube-dl']
-        if os.path.isfile('../config'):
-            command_vec += ['--config-location', '../config']
-        
-        if 'cookies' in receivedMessage and receivedMessage['cookies']:
-            my_jar = makeCookieJar(receivedMessage['cookies'])
-            subprocess.check_output(command_vec + ['--cookies', my_jar, url])
-            os.unlink(my_jar)
-        else:
-            subprocess.check_output(command_vec + [url])
-
-        sendMessage(encodeMessage('Finished Downloading to /data/down: ' + url))
-    except Exception as err:
-        sendMessage(encodeMessage('Some Error Downloading: ' + url + ': ' + str(err)))
 
