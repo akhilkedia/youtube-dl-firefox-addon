@@ -47,8 +47,8 @@ def makeCookieJar(cookies):
 while True:
     try:
         my_jar = None
-        #receivedMessage = json.loads(getMessage())
-        receivedMessage = {'url':"--help", 'cookies':['bla']}
+        receivedMessage = json.loads(getMessage())
+        #receivedMessage = {'url':"--help", 'cookies':['bla']}
         url = receivedMessage['url']
         use_cookies = bool('cookies' in receivedMessage and receivedMessage['cookies'])
 
