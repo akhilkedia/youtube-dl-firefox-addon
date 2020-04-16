@@ -3,7 +3,7 @@
   "description": "Run native linux commands from firefox",
   "manifest_version": 2,
   "name": "Command Runner",
-  "version": "1.1",
+  "version": "1.4",
   "icons": {
     "48": "icons/message.svg"
   },
@@ -11,7 +11,7 @@
   "applications": {
     "gecko": {
       "id": "firefox-command-runner@example.org",
-      "strict_min_version": "50.0"
+      "strict_min_version": "57.0"
     }
   },
 
