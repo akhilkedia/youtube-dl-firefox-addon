@@ -38,7 +38,6 @@ cookie_header = \
     '# This is a generated file! Do not edit.\n\n';
 
 def makeCookieJar(cookies):
-    subprocess.check_output(['/tmp/echo_me', "making cookie jar"])
     with tempfile.NamedTemporaryFile(mode='w+t', suffix=".txt", delete=False) as my_jar:
         my_jar.write(cookie_header)
         my_jar.write(''.join(cookies))
@@ -47,8 +46,8 @@ def makeCookieJar(cookies):
 while True:
     try:
         my_jar = None
-        #receivedMessage = json.loads(getMessage())
-        receivedMessage = {'url':"--help", 'cookies':['bla']}
+        receivedMessage = json.loads(getMessage())
+        #receivedMessage = {'url':"--help", 'cookies':['bla']}
         url = receivedMessage['url']
         use_cookies = bool('cookies' in receivedMessage and receivedMessage['cookies'])
 
@@ -61,13 +60,14 @@ while True:
             
             if use_cookies:
                 my_jar = makeCookieJar(receivedMessage['cookies'])
-                subprocess.check_output(command_vec + ['--cookies', my_jar, url])
-            else:
-                subprocess.check_output(command_vec + [url])
+                command_vec += ['--cookies', my_jar]
 
+            command_vec.append(url)
+            #sendMessage(encodeMessage('running ' + str(command_vec)))
+            subprocess.check_output(command_vec)
             sendMessage(encodeMessage('Finished Downloading to /data/down: ' + url))
         except Exception as err:
-            sendMessage(encodeMessage('Some Error Downloading: ' + url + ': ' + str(err)))
+            sendMessage(encodeMessage('Error Running: ' + str(command_vec) + ': ' + str(err)))
         finally:
             # be sure to remove the cookie storage even in case of exception
             if use_cookies and my_jar:
