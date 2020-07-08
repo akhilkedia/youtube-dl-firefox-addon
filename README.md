@@ -1,7 +1,7 @@
 # ![youtube-dl-firefox-addon](./add-on/icons/message.svg)Youtube-dl Firefox Addon
  - Firefox addon to download youtube videos using [youtube-dl](https://github.com/rg3/youtube-dl)
 
-[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-green.svg)](http://www.gnu.org/licenses/gpl-3.0) [![Donate](https://img.shields.io/badge/Donate-PayPal-blue.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UY6TVJXST724J)
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-green.svg)](http://www.gnu.org/licenses/gpl-3.0) [![Donate](https://img.shields.io/badge/Donate-PayPal-blue.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UY6TVJXST724J) ![Mozilla Add-on](https://img.shields.io/amo/users/youtube-dl-for-linux?style=social)
 
 ## Table of Contents
 
