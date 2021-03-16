@@ -40,7 +40,21 @@ S.signal(S.SIGPIPE, lambda signum, stfr: None)
 # -------------------------------------------------------------------------
 # logging ( nb: better use syslog for this )
 
-LOGFILE = os.path.join( HOMEDIR, '.mozilla/native-messaging-hosts/firefox-command-runner.log' )
+# try to get preferred log directory from the json file, 
+# use the same path otherwise
+LOGDIR = None
+try:
+    jsonfile = sys.argv[1]
+    jsondata = json.loads(open(jsonfile).read())
+    LOGDIR = jsondata.get('logdir', None)
+except:
+    pass
+
+if LOGDIR is None:
+    LOGDIR = os.path.join( HOMEDIR, '.mozilla/native-messaging-hosts' )
+
+LOGFILE = os.path.join( LOGDIR, 'firefox-command-runner.log' )
+
 
 with open(LOGFILE, 'w') as L:
     print >>L, "SIGPIPE wrapper installed at %s" % ( time.strftime('%F %T'), )
