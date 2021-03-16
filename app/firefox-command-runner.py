@@ -1,5 +1,12 @@
 #!/usr/bin/env python2
 
+""" This is started (by firefox) as follows: 
+
+    python2 $HOME/.mozilla/native-messaging-hosts/firefox-command-runner.py    \
+            $HOME/.mozilla/native-messaging-hosts/firefox_command_runner.json  \
+            firefox-command-runner@example.org
+"""
+
 import sys
 import os
 import json
@@ -18,10 +25,9 @@ import traceback as tb
 # settings
 
 HOMEDIR = os.environ.get("HOME", '/tmp')
-# replace teh last '.' for 'Downloads' or whatever
+# replace the last '.' for 'Downloads' or whatever
 DOWNLOADS = os.path.join( HOMEDIR, '.' )
 WAIT_PERIOD = 1 # select() timeout, seconds
-
 
 # -------------------------------------------------------------------------
 # fixes
@@ -34,7 +40,21 @@ S.signal(S.SIGPIPE, lambda signum, stfr: None)
 # -------------------------------------------------------------------------
 # logging ( nb: better use syslog for this )
 
-LOGFILE = os.path.join( HOMEDIR, '.mozilla/native-messaging-hosts/firefox-command-runner.log' )
+# try to get preferred log directory from the json file, 
+# use the same path otherwise
+LOGDIR = None
+try:
+    jsonfile = sys.argv[1]
+    jsondata = json.loads(open(jsonfile).read())
+    LOGDIR = jsondata.get('logdir', None)
+except:
+    pass
+
+if LOGDIR is None:
+    LOGDIR = os.path.join( HOMEDIR, '.mozilla/native-messaging-hosts' )
+
+LOGFILE = os.path.join( LOGDIR, 'firefox-command-runner.log' )
+
 
 with open(LOGFILE, 'w') as L:
     print >>L, "SIGPIPE wrapper installed at %s" % ( time.strftime('%F %T'), )
@@ -44,6 +64,12 @@ def _log(fmt, *args):
     with open(LOGFILE, 'a') as L:
         print >>L, fmt % args
 
+# firefox' process id
+PPID = None
+try:
+    PPID = os.getppid()
+except Exception as err:
+    _log('exception: %s', tb.format_exc())
 
 # -------------------------------------------------------------------------
 # helpers
@@ -95,9 +121,17 @@ def makeCookieJar(cookies):
 # main loop
 
 tasks = {} # { pid: (my_jar, url) }
+# "reverse index"
+urls = {}
 
 while True:
     try:
+        # check parent: somehow firefox does not always close us
+        ppid = os.getppid()
+        if PPID != ppid:
+            _log("/ppid/ %d != %d /original ppid/, so it's probably time to go", ppid, PPID)
+            os.exit(2)
+
         r_, _, _ = select.select([sys.stdin], [], [], WAIT_PERIOD)
         if r_:
         
@@ -111,44 +145,61 @@ while True:
             url = receivedMessage['url']
             use_cookies = bool('cookies' in receivedMessage and receivedMessage['cookies'])
 
-            sendMessage(encodeMessage('Starting Download: ' + url))
-            try:
-                command_vec = ['youtube-dl']
-                config_path = os.path.join(os.pardir, 'config')
-                if os.path.isfile(config_path):
-                    command_vec += ['--config-location', config_path]
+            if url not in urls:
+                sendMessage(encodeMessage('Starting download: ' + url))
+                try:
+                    command_vec = ['youtube-dl']
+                    config_path = os.path.join(os.pardir, 'config')
+                    if os.path.isfile(config_path):
+                        command_vec += ['--config-location', config_path]
 
-                if use_cookies:
-                    my_jar = makeCookieJar(receivedMessage['cookies'])
-                    command_vec += ['--cookies', my_jar]
+                    if use_cookies:
+                        my_jar = makeCookieJar(receivedMessage['cookies'])
+                        command_vec += ['--cookies', my_jar]
 
-                command_vec.append(url)
-                ## sendMessage(encodeMessage('starting ' + str(command_vec)))
-                ## subprocess.check_output(command_vec)
-                pid = os.fork()
-                if 0 == pid :
-                    subprocess.check_output(command_vec, cwd=DOWNLOADS)
-                    break
-                else:
-                    tasks[ pid ] = ( my_jar, url)
-                    _log("[%s]: %r", pid, url)
-            
-            # todo: review and most likely clear this internal try .. except block
-            except Exception as err:
-                sendMessage(encodeMessage('Error Running: ' + str(command_vec) + ': ' + str(err)))
+                    command_vec.append(url)
+                    ## sendMessage(encodeMessage('starting ' + str(command_vec)))
+                    ## subprocess.check_output(command_vec)
+                    pid = os.fork()
+                    if 0 == pid :
+                        try:
+                            subprocess.check_output(command_vec, cwd=DOWNLOADS)
+                        except:
+                            pass
+                        finally:
+                            # exit the child process
+                            sys.exit(0)
+                    else:
+                        tasks[ pid ] = ( my_jar, url)
+                        urls[ url ] = pid
+                        _log("[%s]: %r", pid, url)
+                
+                # todo: review and most likely clear this internal try .. except block
+                except Exception as err:
+                    sendMessage(encodeMessage('Error Running: ' + str(command_vec) + ': ' + str(err)))
+            else:
+                sendMessage(encodeMessage('Already downloading: ' + url))
 
         if tasks.keys():
             while True:
                 try:
                     pid, status = os.waitpid( -1, os.WNOHANG )
                 except OSError as e:
+                    # no more children to wait for so far
                     if e.errno == E.ECHILD:
                         break
-                        
-                if 0 == pid:
+
+                # children exist, but did not yet change state
+                if 0 == pid: 
                     break
+
                 # else
                 my_jar, url = tasks.pop(pid, (None, None))
+                
+                if url is not None:
+                    if url in urls:
+                        del urls[url]
+                
                 if my_jar is not None:
                     os.unlink(my_jar)
                 if url is None :
